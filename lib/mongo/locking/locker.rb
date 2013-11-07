@@ -273,28 +273,31 @@ module Mongo
             #   - set expire_at for future async/lazy lock reaping
 
             def atomic_inc(search_hash, update_hash)
-                return Locking.collection.find_and_modify({
-                    :new    => true,    # Return the updated document
-                    :upsert => true,    # Update if document exists, insert if not
-                    :query  => search_hash.merge({'$atomic' => 1}),
-                    :update => {'$inc' => update_hash.dup},
-                })
+               # return Locking.collection.find_and_modify({
+               #     :new    => true,    # Return the updated document
+               #     :upsert => true,    # Update if document exists, insert if not
+               #     :query  => search_hash.merge({'$atomic' => 1}),
+               #     :update => {'$inc' => update_hash.dup},
+               # })
+               return Locking.collection.find(search_hash.merge({'$atomic' => 1})).modify({'$inc' => update_hash.dup}, new: true, upsert: true)
             end
 
             def atomic_update(search_hash, update_hash)
-                return Locking.collection.find_and_modify({
-                    :new    => true,    # Return the updated document
-                    :upsert => true,    # Update if document exists, insert if not
-                    :query  => search_hash.merge({'$atomic' => 1}),
-                    :update => {'$set' => update_hash.dup},
-                })
+               # return Locking.collection.find_and_modify({
+               #     :new    => true,    # Return the updated document
+               #     :upsert => true,    # Update if document exists, insert if not
+               #     :query  => search_hash.merge({'$atomic' => 1}),
+               #     :update => {'$set' => update_hash.dup},
+               # })
+               return Locking.collection.find(search_hash.merge({'$atomic' => 1})).modify({'$set' => update_hash.dup}, new: true, upsert: true)
             end
 
             def atomic_delete(search_hash)
-                return Locking.collection.find_and_modify({
-                    :query  => search_hash.merge({'$atomic' => 1}),
-                    :remove => true,
-                })
+               # return Locking.collection.find_and_modify({
+               #     :query  => search_hash.merge({'$atomic' => 1}),
+               #     :remove => true,
+               # })
+               return Locking.collection.find(search_hash.merge({'$atomic' => 1})).remove
             end
 
         end # Locker
