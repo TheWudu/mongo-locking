@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.homepage         = "http://github.com/servio/mongo-locking"
 
   s.add_dependency "mongo",          "~> 1.3.1"
-  s.add_dependency "active_support", "~> 3.0.4"
+  s.add_dependency "active_support", "~> 4.0.0"
 
   s.require_path = 'lib'
   s.files        = %w(LICENSE README.md Rakefile) + Dir["lib/{**/*/**/,}*.rb"]
