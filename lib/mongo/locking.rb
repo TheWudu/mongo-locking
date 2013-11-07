@@ -28,7 +28,7 @@ module Mongo
         end
         include Exceptions
 
-        attr_accessor :logger, :collection
+        attr_accessor :logger, :lock_collection
         delegate      :debug, :info, :warn, :error, :fatal, :to => :logger, :allow_nil => true
 
         def included(klass)
@@ -44,22 +44,22 @@ module Mongo
             return self
         end
 
-        def collection=(new)
-            @collection = new
-            ensure_indices if @collection.kind_of? Mongo::Collection
-            return @collection
+        def lock_collection=(new)
+            @lock_collection = new
+            ensure_indices if @lock_collection.kind_of? Mongo::Collection
+            return @lock_collection
         end
 
         # Allow for a proc to be initially set as the collection, in case of
         # delayed loading/configuration/whatever.  It'll only be materialized
         # when first accessed, which is presumably either when ensure_indices is
         # called imperatively, or more likely upon the first lock call.
-        def collection
-            if @collection.kind_of? Proc
-                @collection = @collection.call
-                ensure_indices if @collection.kind_of? Mongo::Collection
-            end
-            return @collection
+        def lock_collection
+          if @lock_collection.kind_of? Proc
+            @lock_collection = @lock_collection.call
+            ensure_indices if @lock_collection.kind_of? Mongo::Collection
+          end
+          return @lock_collection
         end
 
         ##
